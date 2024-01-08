@@ -4,6 +4,8 @@ import AddContactForm from './AddContact/AddContact';
 import ContactsList from './ContactList/ContactList';
 import FilterField from './Filter/Filter';
 
+const LS_KEYS = 'ls-contacts';
+
 export class App extends Component {
   state = {
     contacts: [],
@@ -47,6 +49,19 @@ export class App extends Component {
     });
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(LS_KEYS, JSON.stringify(this.state.contacts));
+    }
+  }
+
+  componentDidMount() {
+    const data = JSON.parse(localStorage.getItem(LS_KEYS));
+
+    if (data !== null) {
+      this.setState({ contacts: data });
+    }
+  }
   render() {
     const { contacts, filter } = this.state;
     const visibleContacts = this.getFilteredContacts();
